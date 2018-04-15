@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+x64/
+[Bb]uild*/
+bld/
+[Bb]in/
+[Oo]bj/
+.snakemake/
+benchmark/

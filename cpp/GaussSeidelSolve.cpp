@@ -6,10 +6,10 @@
 
 float* GaussSeidel(float **A, float *b, const int &N, const int &M)
 {
-	const int ITERATION_LIMIT = 1e20;
+	const int ITERATION_LIMIT = (int)1e20;
 	int cnt;
-	float *x_new = new T[M],
-		  *res = new T[M],
+	float *x_new = new float[M],
+		  *res = new float[M],
 			diff;
 	for(int it = 0; it < ITERATION_LIMIT; ++it)
 	{
