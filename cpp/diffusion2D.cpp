@@ -1,10 +1,10 @@
-#define SAVEDAT
 #include <iostream>
 #include <random>
 #include <algorithm>
 #include <cstring>
+#include <chrono>
 #ifdef VIEWER
-// g++ diffusion2D.cpp -std=c++11 `pkg-config opencv --cflags --libs`
+// g++ diffusion2D.cpp -O3 -std=c++11 `pkg-config opencv --cflags --libs`
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/contrib/contrib.hpp>
@@ -53,97 +53,82 @@ we rewrite the equations as
 inline float Vx(const float &x, const float &y){ return A - (B+1)*x + y*x*x; }
 inline float Vy(const float &x, const float &y){ return B*x - x*x*y; }
 
-void diffusion2D(float **ut, float **vt, const int &dim, const float &dx)
+void diffusion2D(float *ut, float *vt, const int &dim, const float &dx)
 {
-    float **u = new float*[dim],
-          **v = new float*[dim],
+    int i, j, dim2 = dim*dim;
+    float *u = new float[dim2],
+          *v = new float[dim2],
           lap_u, lap_v;
-    std::generate(u, u + dim, [&dim](){return new float[dim];});
-    std::generate(v, v + dim, [&dim](){return new float[dim];});
-    int i, j;
+
     for(int t = 0; t < ITER; ++t)
     {
 #ifdef DEBUG
         std::cout << "Iteration " << t << " of " << ITER << std::endl;
 #endif
-        for(i = 0; i < dim; ++i)
-        {
-            std::memcpy(u[i], ut[i], sizeof(float)*dim);
-            std::memcpy(v[i], vt[i], sizeof(float)*dim);
-        }
+        std::memcpy(u, ut, sizeof(float)*dim2);
+        std::memcpy(v, vt, sizeof(float)*dim2);
+
         // i == 0
         // j == 0
-        lap_u = (u[0][1] + u[1][0] + u[0][dim-1] + u[dim-1][0] - 4*u[0][0]) * hx2;
-        lap_v = (v[0][1] + v[1][0] + v[0][dim-1] + v[dim-1][0] - 4*v[0][0]) * hx2;
-        ut[0][0] = ht * (Du * lap_u + Vx(u[0][0], v[0][0])) + u[0][0];
-        vt[0][0] = ht * (Du * lap_v + Vy(u[0][0], v[0][0])) + v[0][0];
+        lap_u = (u[1] + u[dim] + u[dim-1] + u[dim2 - dim] - 4*u[0]) * hx2;
+        lap_v = (v[1] + v[dim] + v[dim-1] + v[dim2 - dim] - 4*v[0]) * hx2;
+        ut[0] = ht * (Du * lap_u + Vx(u[0], v[0])) + u[0];
+        vt[0] = ht * (Du * lap_v + Vy(u[0], v[0])) + v[0];
         // j == dim - 1
-        lap_u = (u[0][dim-2] + u[1][dim-1] + u[0][0] + u[dim-1][0] - 4*u[0][dim-1]) * hx2;
-        lap_v = (v[0][dim-2] + v[1][dim-1] + v[0][0] + v[dim-1][0] - 4*v[0][dim-1]) * hx2;
-        ut[0][dim-1] = ht * (Du * lap_u + Vx(u[0][dim-1], v[0][dim-1])) + u[0][dim-1];
-        vt[0][dim-1] = ht * (Dv * lap_v + Vy(u[0][dim-1], v[0][dim-1])) + v[0][dim-1];
+        lap_u = (u[dim-2] + u[dim + dim-1] + u[0] + u[dim2-1] - 4*u[dim-1]) * hx2;
+        lap_v = (v[dim-2] + v[dim + dim-1] + v[0] + v[dim2-1] - 4*v[dim-1]) * hx2;
+        ut[dim-1] = ht * (Du * lap_u + Vx(u[dim-1], v[dim-1])) + u[dim-1];
+        vt[dim-1] = ht * (Dv * lap_v + Vy(u[dim-1], v[dim-1])) + v[dim-1];
 
         for(i = 1; i < dim - 1; ++i)
         {
             // first row
-            lap_u = (u[0][i+1] + u[0][i-1] + u[dim-1][i] + u[1][i] - 4*u[0][i]) * hx2;
-            lap_v = (v[0][i+1] + v[0][i-1] + v[dim-1][i] + v[1][i] - 4*v[0][i]) * hx2;
-            ut[0][i] = ht * (Du * lap_u + Vx(u[0][i], v[0][i])) + u[0][i];
-            vt[0][i] = ht * (Dv * lap_v + Vy(u[0][i], v[0][i])) + v[0][i];
+            lap_u = (u[i+1] + u[i-1] + u[dim2 - dim + i] + u[dim + i] - 4*u[i]) * hx2;
+            lap_v = (v[i+1] + v[i-1] + v[dim2 - dim + i] + v[dim + i] - 4*v[i]) * hx2;
+            ut[i] = ht * (Du * lap_u + Vx(u[i], v[i])) + u[i];
+            vt[i] = ht * (Dv * lap_v + Vy(u[i], v[i])) + v[i];
 
             // j == 0
-            lap_u = (u[i][dim-1] + u[i][1] + u[i-1][0] + u[i+1][0] - 4*u[i][0]) * hx2;
-            lap_v = (v[i][dim-1] + v[i][1] + v[i-1][0] + v[i+1][0] - 4*v[i][0]) * hx2;
-            ut[i][0] = ht * (Du * lap_u + Vx(u[i][0], v[i][0])) + u[i][0];
-            vt[i][0] = ht * (Dv * lap_v + Vy(u[i][0], v[i][0])) + v[i][0];
+            lap_u = (u[dim*i + dim-1] + u[i*dim + 1] + u[(i-1)*dim] + u[(i+1)*dim] - 4*u[dim*i]) * hx2;
+            lap_v = (v[dim*i + dim-1] + v[i*dim + 1] + v[(i-1)*dim] + v[(i+1)*dim] - 4*v[dim*i]) * hx2;
+            ut[dim*i] = ht * (Du * lap_u + Vx(u[dim*i], v[dim*i])) + u[dim*i];
+            vt[dim*i] = ht * (Dv * lap_v + Vy(u[dim*i], v[dim*i])) + v[dim*i];
             
             for(j = 1; j < dim - 1; ++j)
             {
-                lap_u = (u[i][j+1] + u[i][j-1] + u[i-1][j] + u[i+1][j] - 4*u[i][j]) * hx2;
-                lap_v = (v[i][j+1] + v[i][j-1] + v[i-1][j] + v[i+1][j] - 4*v[i][j]) * hx2;
+                lap_u = (u[dim*i + j+1] + u[i*dim + j-1] + u[(i-1)*dim + j] + u[(i+1)*dim + j] - 4*u[dim*i + j]) * hx2;
+                lap_v = (v[dim*i + j+1] + v[i*dim + j-1] + v[(i-1)*dim + j] + v[(i+1)*dim + j] - 4*v[dim*i + j]) * hx2;
 
-                ut[i][j] = ht * (Du * lap_u + Vx(u[i][j], v[i][j])) + u[i][j];
-                vt[i][j] = ht * (Dv * lap_v + Vy(u[i][j], v[i][j])) + v[i][j];
+                ut[i*dim + j] = ht * (Du * lap_u + Vx(u[i*dim + j], v[i*dim + j])) + u[i*dim + j];
+                vt[i*dim + j] = ht * (Dv * lap_v + Vy(u[i*dim + j], v[i*dim + j])) + v[i*dim + j];
             }
             // j == dim - 1
-            lap_u = (u[i][j-1] + u[i-1][j] + u[i+1][j] + u[i][0] - 4*u[i][j]) * hx2;
-            lap_v = (v[i][j-1] + v[i-1][j] + v[i+1][j] + v[i][0] - 4*v[i][j]) * hx2;
-            ut[i][j] = ht * (Du * lap_u + Vx(u[i][j], v[i][j])) + u[i][j];
-            vt[i][j] = ht * (Dv * lap_v + Vy(u[i][j], v[i][j])) + v[i][j];
+            lap_u = (u[i*dim + j-1] + u[(i-1)*dim + j] + u[(i+1)*dim + j] + u[i*dim] - 4*u[dim*i + j]) * hx2;
+            lap_v = (v[i*dim + j-1] + v[(i-1)*dim + j] + v[(i+1)*dim + j] + v[i*dim] - 4*v[dim*i + j]) * hx2;
+            ut[i*dim + j] = ht * (Du * lap_u + Vx(u[i*dim + j], v[i*dim + j])) + u[i*dim + j];
+            vt[i*dim + j] = ht * (Dv * lap_v + Vy(u[i*dim + j], v[i*dim + j])) + v[i*dim + j];
 
             // last row
-            lap_u = (u[dim-1][i+1] + u[dim-1][i-1] + u[dim-1][i] + u[0][i] - 4*u[dim-1][i]) * hx2;
-            lap_v = (v[dim-1][i+1] + v[dim-1][i-1] + v[dim-1][i] + v[0][i] - 4*v[dim-1][i]) * hx2;
-            ut[dim-1][i] = ht * (Du * lap_u + Vx(u[dim-1][i], v[dim-1][i])) + u[dim-1][i];
-            vt[dim-1][i] = ht * (Dv * lap_v + Vy(u[dim-1][i], v[dim-1][i])) + v[dim-1][i];
+            lap_u = (u[dim2 - dim + i+1] + u[dim2 - dim + i-1] + u[dim2 - dim + i] + u[i] - 4*u[dim2 - dim + i]) * hx2;
+            lap_v = (v[dim2 - dim + i+1] + v[dim2 - dim + i-1] + v[dim2 - dim + i] + v[i] - 4*v[dim2 - dim + i]) * hx2;
+            ut[dim2 - dim + i] = ht * (Du * lap_u + Vx(u[dim2 - dim + i], v[dim2 - dim + i])) + u[dim2 - dim + i];
+            vt[dim2 - dim + i] = ht * (Dv * lap_v + Vy(u[dim2 - dim + i], v[dim2 - dim + i])) + v[dim2 - dim + i];
         }
 
         // i == dim-1
         // j == 0
-        lap_u = (u[dim-1][1] + u[0][0] + u[dim-1][dim-1] + u[dim-2][0] - 4*u[dim-1][0]) * hx2;
-        lap_v = (v[dim-1][1] + v[0][0] + v[dim-1][dim-1] + v[dim-2][0] - 4*v[dim-1][0]) * hx2;
-        ut[dim-1][0] = ht * (Du * lap_u + Vx(u[dim-1][0], v[dim-1][0])) + u[dim-1][0];
-        vt[dim-1][0] = ht * (Du * lap_v + Vy(u[dim-1][0], v[dim-1][0])) + v[dim-1][0];
+        lap_u = (u[dim2 - dim + 1] + u[0] + u[dim2 - 1] + u[dim2 - 2*dim] - 4*u[dim2 - dim]) * hx2;
+        lap_v = (v[dim2 - dim + 1] + v[0] + v[dim2 - 1] + v[dim2 - 2*dim] - 4*v[dim2 - dim]) * hx2;
+        ut[dim2 - dim] = ht * (Du * lap_u + Vx(u[dim2 - dim], v[dim2 - dim])) + u[dim2 - dim];
+        vt[dim2 - dim] = ht * (Du * lap_v + Vy(u[dim2 - dim], v[dim2 - dim])) + v[dim2 - dim];
 
         // j == dim - 1
-        lap_u = (u[dim-1][dim-2] + u[dim-2][dim-1] + u[dim-1][0] + u[0][dim-1] - 4*u[dim-1][dim-1]) * hx2;
-        lap_v = (v[dim-1][dim-2] + v[dim-2][dim-1] + v[dim-1][0] + v[0][dim-1] - 4*v[dim-1][dim-1]) * hx2;
-        ut[dim-1][dim-1] = ht * (Du * lap_u + Vx(u[dim-1][dim-1], v[dim-1][dim-1])) + u[dim-1][dim-1];
-        vt[dim-1][dim-1] = ht * (Dv * lap_v + Vy(u[dim-1][dim-1], v[dim-1][dim-1])) + v[dim-1][dim-1];
+        lap_u = (u[dim2 - 2] + u[dim2 - dim - 1] + u[dim2 - dim] + u[dim - 1] - 4*u[dim2 - 1]) * hx2;
+        lap_v = (v[dim2 - 2] + v[dim2 - dim - 1] + v[dim2 - dim] + v[dim - 1] - 4*v[dim2 - 1]) * hx2;
+        ut[dim2 - 1] = ht * (Du * lap_u + Vx(u[dim2 - 1], v[dim2 - 1])) + u[dim2 - 1];
+        vt[dim2 - 1] = ht * (Dv * lap_v + Vy(u[dim2 - 1], v[dim2 - 1])) + v[dim2 - 1];
     }
-#ifdef SAVEDAT
-    std::ofstream os("end.dat", std::ios::out | std::ios::binary);
-    for(int i = 0; i < dim; ++i)
-        for(int j = 0; j < dim; ++j) 
-            os.write( (const char *) &ut[i][j], sizeof( float ));
-    os.close();
-#endif
 
-    for(int i = 0; i < dim; ++i)
-    {
-        delete[] u[i];
-        delete[] v[i];
-    }
     delete[] u;
     delete[] v;
     return;
@@ -154,26 +139,38 @@ int main(int argc, char **argv)
 {
     const int dim = 120;
     const float dx = 2.f / dim;
-    float **u = new float*[dim],
-          **v = new float*[dim];
-    std::generate(u, u + dim, [&dim](){return new float[dim];});
-    std::generate(v, v + dim, [&dim](){return new float[dim];});
-
+    float *u = new float[dim*dim],
+          *v = new float[dim*dim];
     // initial condition
-    for(int i = 0; i < dim; ++i)
-    {
-        std::generate(u[i], u[i] + dim, [](){return A   + distr(eng)*.3f;});
-        std::generate(v[i], v[i] + dim, [](){return B/A + distr(eng)*.3f;});
-    }
+    std::generate(u, u + dim*dim, [](){return A   + distr(eng)*.3f;});
+    std::generate(v, v + dim*dim, [](){return B/A + distr(eng)*.3f;});
+
 #ifdef SAVEDAT
     std::ofstream os("init.dat", std::ios::out | std::ios::binary);
-    for(int i = 0; i < dim; ++i)
-        for(int j = 0; j < dim; ++j) 
-            os.write( (const char *) &u[i][j], sizeof( float ));
+    for(int i = 0; i < dim*dim; ++i)
+        os.write( (const char *) &u[i], sizeof( float ));
     os.close();
 #endif
-
+    auto start = std::chrono::steady_clock::now();
     diffusion2D(u, v, dim, dx);
-    
+    auto duration = std::chrono::duration_cast<std::chrono::seconds> (std::chrono::steady_clock::now() - start);
+    std::cout << "Elapsed time : " << duration.count() << " sec" << std::endl;
+
+#ifdef SAVEDAT
+    std::ofstream os("end.dat", std::ios::out | std::ios::binary);
+    for(i = 0; i < dim*dim; ++i)
+        os.write( (const char *) &u[i], sizeof( float ));
+    os.close();
+#endif
+#ifdef VIEWER
+    cv::Mat U(dim, dim, CV_32FC1, u);
+    cv::normalize(U, U, 0, 255, cv::NORM_MINMAX);
+    U.convertTo( U, CV_8UC1 );
+    applyColorMap(U, U, cv::COLORMAP_JET);
+    cv::namedWindow( "Turing Pattern", cv::WINDOW_NORMAL );// Create a window for display
+    cv::imshow( "Turing Pattern", U );
+    cv::waitKey(0); 
+    U.release();
+#endif
     return 0;
 }
