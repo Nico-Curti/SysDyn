@@ -13,8 +13,8 @@ Vx = lambda q, p : p
 Vy = lambda q, p : -q
 
 # Integrators
-euler = lambda q, p, dt, k : ( q + dt*Vx(q, p), q + dt*k*Vy(q, p) )
-simplettic   = lambda q, p, dt, k : ( q + dt+Vx(q, p + dt*k*Vy(q, p)), p + dt*k*Vy(q, p))
+euler        = lambda q, p, dt, k : ( q + dt*Vx(q, p), p + dt*k*Vy(q, p) )
+simplettic   = lambda q, p, dt, k : ( q + dt*Vx(q, p + dt*k*Vy(q, p)), p + dt*k*Vy(q, p))
 
 
 k = .5
@@ -27,7 +27,7 @@ q_si[0], p_si[0] = .5, 0 # initial conditions
 
 for t in range(0, it-1):
 	q_eu[t+1], p_eu[t+1] = euler(q_eu[t], p_eu[t], dt, k)
-	q_si[t+1], p_si[t+1] = rk2(q_si[t], p_si[t], dt, k)
+	q_si[t+1], p_si[t+1] = simplettic(q_si[t], p_si[t], dt, k)
 
 time = np.arange(0, it*dt, dt)
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(8,8))
