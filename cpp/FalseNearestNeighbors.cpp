@@ -44,7 +44,7 @@ template<typename T> int FalseNearestNeighbors(T *x, const int &n, const int &ma
         ind1 = 0;
         ind2 = 0;
         fnn = 0;
-        #pragma omp parallel for reduction(+: ind1, ind2, fnn1, fnn2) private(idx)
+#pragma omp parallel for reduction(+: ind1, ind2, fnn1, fnn2) private(idx)
         for(int i = 0; i < N; ++i)
         {
             mins = std::numeric_limits<T>::max();
