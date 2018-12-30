@@ -39,4 +39,4 @@ Any contribution is more than welcome. Just fill an issue or a pull request and 
 
 ## License
 
-NO LICENSEs are available. All rights are reserved.
+This project is released under GPL license. [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Nico-Curti/SysDyn/blob/master/LICENSE)
