@@ -4,12 +4,14 @@
 #include <utility> // std::pair
 #include <algorithm>
 #include <numeric>
+#include <array>
 #ifdef STDOUT
 #include <fstream>
 #endif
 
-#define N 20
-#define SEED 123
+static constexpr int N = 20;
+static constexpr int SEED = 123;
+
 std::mt19937 eng(SEED);
 std::uniform_real_distribution<float> distr(0.f, 1.f);
 
@@ -131,30 +133,32 @@ auto kalman_filter = [&](float *x, float *P,
 
 int main(int argc, char **argv)
 {
-  float *initial = new float[4], // initial state 4-tuple of location and velocity: (x0, x1, x0_dot, x1_dot)
-        *motion  = new float[4], // external motion added to state vector x
-        *P       = new float[16], // initial uncertainty
-        *Q       = new float[16], // motion noise (same shape as P)
-        *true_x  = new float[N],
-        *true_y  = new float[N],
-        *obs_x   = new float[N],
-        *obs_y   = new float[N],
-        H[8],  // measurement function: position = H*x
-        F[16]; // next state function: x_prime = F*x
-  const float R = .01f*.01f; // measurement noise
+  std::array<float, 4> initial, // initial state 4-tuple of location and velocity: (x0, x1, x0_dot, x1_dot)
+                       motion;  // external motion added to state vector x
+  std::array<float, 16> P,      // initial uncertainty
+                        Q;      // motion noise (same shape as P)
 
-  std::memset(initial, 0.f, sizeof(float)*4);
-  std::memset(motion, 0.f, sizeof(float)*4);
+  std::array<float, N> true_x,
+                       true_y,
+                       obs_x,
+                       obs_y;
+  std::array<float, 8> H,       // measurement function: position = H*x
+                       F;       // next state function: x_prime = F*x
 
-  std::memset(P, 0.f, sizeof(float)*16); // identity *1000
+  constexpr float R = 1e-1f * 1e-1f; // measurement noise
+
+  std::fill_n(initial.begin(), 4,  0.f);
+  std::fill_n(motion.begin(), 4,  0.f);
+
+  std::fill_n(P.begin(), 16, 0.f); // identity *1000
   P[0] = 1e3f; P[5] = 1e3f; P[10] = 1e3f; P[15] = 1e3f;
 
-  std::memset(Q, 0.f, sizeof(float)*16); // Identity
+  std::memset(Q.begin(), 16, 0.f); // Identity
   Q[0] = 1.f; Q[5] = 1.f; Q[10] = 1.f; Q[15] = 1.f;
 
   for(int i = 0; i < N; ++i)
   {
-    true_x[i] = (float)i / N;
+    true_x[i] = static_cast<float>(i) / N;
     true_y[i] = true_x[i]*true_x[i];
     obs_x[i]  = true_x[i] + .05f*distr(eng)*true_x[i];
     obs_y[i]  = true_y[i] + .05f*distr(eng)*true_y[i];
@@ -170,12 +174,12 @@ int main(int argc, char **argv)
   H[0] = 1.f; H[1] = 0.f; H[2] = 0.f; H[3] = 0.f;
   H[4] = 0.f; H[5] = 1.f; H[6] = 0.f; H[7] = 0.f;
 
-  std::pair<float, float> *rec = new std::pair<float, float>[N];
-  std::transform(obs_x, obs_x + N,
-                 obs_y, rec,
-                 [&initial, &P, &motion, &H, &Q, &F, R](const float &obx, const float &oby)
+  std::array<std::pair<float, float>, N> rec;
+  std::transform(obs_x.begin(), obs_x.end(),
+                 obs_y.begin(), rec.begin(),
+                 [&](const float &obx, const float &oby)
                  {
-                  return kalman_filter(initial, P, F, H, motion, Q, R, obx, oby);
+                  return kalman_filter(initial.data(), P.data(), F.data(), H.data(), motion.data(), Q.data(), R.data(), obx.data(), oby.data());
                  });
 
   std::cout << "\tTrue coord\tFiltered coord" << std::endl;
