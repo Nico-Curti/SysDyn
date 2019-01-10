@@ -1,0 +1,15 @@
+py/bernoulli2D.py
+py/bifurcation.py
+py/bisection_root.py
+py/diffusion2D.py
+py/duffin_van_der_pol.py
+py/false_nearest_neighbours.py
+py/grassberger_procaccia.py
+py/harmonic.py
+py/integration.py
+py/logistic_map.py
+py/lorentz_attractor.py
+py/mutual_info.py
+py/newton_root.py
+py/secant_root.py
+py/standard_map.py

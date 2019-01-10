@@ -1,0 +1,43 @@
+image: Visual Studio 2017
+clone_folder: c:\projects\SysDyn
+configuration: Release
+
+environment:
+    WORKSPACE: C:\projects
+    VCPKG_ROOT: C:\projects\vcpkg
+    VCPKG_DEFAULT_TRIPLET: x64-windows-physycom
+    matrix:
+    - platform: Win64
+      COMPILER: vs
+
+install:
+  - if [%COMPILER%]==[vs] cinst ninja
+  - if [%COMPILER%]==[vs] SET "PATH=C:\Program Files\CMake\bin;%PATH%"
+  - if [%COMPILER%]==[vs] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
+  - git submodule -q update --init --recursive
+  - cd %WORKSPACE%\
+  ############################################################################
+  # Install a recent CMake
+  ############################################################################
+  - set CMAKE_URL="https://cmake.org/files/v3.12/cmake-3.12.1-win64-x64.zip"
+  - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
+  - 7z x cmake.zip -oC:\projects\deps > nul
+  - move C:\projects\deps\cmake-* C:\projects\deps\cmake # Move to a version-agnostic directory
+  - set PATH=C:\projects\deps\cmake\bin;%PATH%
+  - cmake --version
+
+  - git clone https://github.com/physycom/sysconfig
+  - if [%COMPILER%]==[vs] git clone https://github.com/Microsoft/vcpkg
+  - if [%COMPILER%]==[vs] copy %WORKSPACE%\sysconfig\cmake\%VCPKG_DEFAULT_TRIPLET%.cmake %WORKSPACE%\vcpkg\triplets\
+  - if [%COMPILER%]==[vs] cd %VCPKG_ROOT%
+  - if [%COMPILER%]==[vs] bootstrap-vcpkg.bat
+  - if [%COMPILER%]==[vs] vcpkg integrate install
+  - if [%COMPILER%]==[vs] vcpkg update
+  - if [%COMPILER%]==[vs] vcpkg install opencv
+  - cd %WORKSPACE%\SysDyn\
+  - mkdir build
+  - cd build
+
+build_script:
+  - if [%COMPILER%]==[vs] cmake .. -G "Visual Studio 15 2017 Win64" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" "-DCMAKE_BUILD_TYPE=Release" "-DOMP=OFF"
+  - if [%COMPILER%]==[vs] cmake --build . --config Release

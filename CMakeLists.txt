@@ -7,6 +7,25 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (MAJOR    1)
 set (MINOR    0)
 set (REVISION 0)
+add_definitions (-DMAJOR=${MAJOR} -DMINOR=${MINOR} -DREVISION=${REVISION})
+
+#################################################################
+#                         COMPILE OPTIONS                       #
+#################################################################
+
+option (VIEWER     "Enable OpenCV support" OFF  )
+
+#################################################################
+#                         SETTING VARIABLES                     #
+#################################################################
+
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
+
+if ( NOT APPLE )
+  set (CMAKE_SKIP_BUILD_RPATH             FALSE )
+  set (CMAKE_BUILD_WITH_INSTALL_RPATH     FALSE )
+  set (CMAKE_INSTALL_RPATH_USE_LINK_PATH  TRUE  )
+endif()
 
 if ( CMAKE_COMPILER_IS_GNUCC )
   add_compile_options (-Wall -Wextra -Wno-unused-result)
@@ -22,6 +41,18 @@ if ( MSVC )
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRTD")
   #set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT")
   set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
+#################################################################
+#                         PARSE OPTIONS                         #
+#################################################################
+
+if (VIEWER)
+  add_definitions (-DVIEWER)
+endif()
+
+if (MSVC)
+  add_definitions (-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
 #################################################################
@@ -45,6 +76,8 @@ message(STATUS "      Linker flags : "                                          
 foreach(FLAG ${linked_libs})
   message(STATUS "                    * ${FLAG}"                                      )
 endforeach(FLAG)
+message(STATUS ""                                                                     )
+message(STATUS "   VIEWER support : ${VIEWER}"                                        )
 message(STATUS ""                                                                     )
 
 #################################################################

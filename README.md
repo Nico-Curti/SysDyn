@@ -1,6 +1,6 @@
-| **Authors**  | **Project** |
-|:------------:|:-----------:|
-|   N. Curti   |   SysDyn    |
+| **Authors**  | **Project** | **Build Status**              | **Latest Version** | **License** |
+|:------------:|:-----------:|:-----------------------------:|:------------------:|:-----------:|
+|   N. Curti   |   SysDyn    | **Linux/MacOs** : [![Travis](https://travis-ci.com/Nico-Curti/SysDyn.svg?branch=master)](https://travis-ci.com/Nico-Curti/SysDyn) <br/> **Windows** : *miss*  | ![version](https://img.shields.io/badge/PyPI-v1.0.0-orange.svg?style=plastic) | [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Nico-Curti/SysDyn/blob/master/LICENSE)
 
 <a href="https://github.com/physycom">
 <div class="image">
@@ -16,6 +16,8 @@ Different methods about **Systems Dynamics** research are shown from the simples
 
 ## Installation
 
+### C++ version
+
 To build the C++ scripts:
 
 ```bash
@@ -29,6 +31,14 @@ cmake --build .
 
 **NOTE**: make sure that your c++ compiler supports the standard required! If some troubles occur follow the instruction at [intrphysycom](https://github.com/physycom/intrphysycom) page to configure your machine or use the scripts in [ShUt](https:://github.com//Nico-Curti/shut) if you are looking for *no root users* solutions.
 
+### Python version
+
+To use the python scripts install the prerequisites:
+
+```bash
+pip install -r prerequisites.txt
+```
+
 ## Contributions
 
 Any contribution is more than welcome. Just fill an issue or a pull request and I will check ASAP!
@@ -39,4 +49,4 @@ Any contribution is more than welcome. Just fill an issue or a pull request and 
 
 ## License
 
-This project is released under GPL license. [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Nico-Curti/SysDyn/blob/master/LICENSE)
+This project is released under GPL license.

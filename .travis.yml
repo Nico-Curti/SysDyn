@@ -1,0 +1,82 @@
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc
+      addons:
+        apt:
+          sources:
+            ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+            - g++-8
+            - ninja-build
+            - libopencv-dev
+      env: BUILD=linux-gcc
+
+    - os: osx
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-7
+          packages:
+            - clang-7.0
+      env:
+        - CXX=clang++-7
+        - LINKER_FLAGS="-stdlib=libc++ -lc++abi"
+        - CXXFLAGS="-stdlib=libc++"
+        - BUILD=osx-clang
+
+before_install:
+  - pip install --user codecov
+
+  - if [[ "$BUILD" == "osx-clang" ]]; then wget --no-check-certificate https://cmake.org/files/v3.13/cmake-3.13.1-Darwin-x86_64.tar.gz   ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then tar -xzf cmake-3.13.1-Darwin-x86_64.tar.gz                                                    ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then export PATH=$PWD/cmake-3.13.1-Darwin-x86_64/CMake.app/Contents/bin:$PATH                      ;fi
+
+  ###############################################################################################################################################
+
+  - if [[ "$BUILD" == "linux-gcc" ]]; then wget --no-check-certificate https://cmake.org/files/v3.13/cmake-3.13.1-Linux-x86_64.tar.gz    ;fi
+  - if [[ "$BUILD" == "linux-gcc" ]]; then tar -xzf cmake-3.13.1-Linux-x86_64.tar.gz                                                     ;fi
+  - if [[ "$BUILD" == "linux-gcc" ]]; then export PATH=$PWD/cmake-3.13.1-Linux-x86_64/bin:$PATH                                          ;fi
+
+install:
+  - if [[ "$BUILD" == "osx-clang" ]]; then brew update                                                                                   ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then brew install llvm                                                                             ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then brew install ninja                                                                            ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then brew install opencv                                                                           ;fi
+  #- if [[ "$BUILD" == "osx-clang" ]]; then export CC=/usr/local/bin/clang-7                                                              ;fi
+  #- if [[ "$BUILD" == "osx-clang" ]]; then export CXX=/usr/local/bin/clang-7                                                             ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then export CMAKE_C_COMPILER=${CC}                                                                 ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then export CMAKE_CXX_COMPILER=${CXX}                                                              ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then export CMAKE_LINKER=clang++-7                                                                 ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then ${CXX} --version                                                                              ;fi
+  ###############################################################################################################################################
+
+  # Link gcc-7 and g++-7 to their standard commands
+  - if [[ "$BUILD" == "linux-gcc" ]]; then sudo ln -s /usr/bin/gcc-8 /usr/local/bin/gcc                                                  ;fi
+  - if [[ "$BUILD" == "linux-gcc" ]]; then sudo ln -s /usr/bin/g++-8 /usr/local/bin/g++                                                  ;fi
+  # Export CC and CXX to tell cmake which compiler to use
+  - if [[ "$BUILD" == "linux-gcc" ]]; then export CC=/usr/bin/gcc-8                                                                      ;fi
+  - if [[ "$BUILD" == "linux-gcc" ]]; then export CXX=/usr/bin/g++-8                                                                     ;fi
+  # Check versions of gcc, g++ and cmake
+  - if [[ "$BUILD" == "linux-gcc" ]]; then gcc -v && g++ -v && cmake --version                                                           ;fi
+  # Check version of opencv installed
+  - if [[ "$BUILD" == "linux-gcc" ]]; then pkg-config --modversion opencv                                                                ;fi
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake --version
+  - if [[ "$BUILD" == "linux-gcc" ]]; then cmake -G "Ninja" "-DCMAKE_BUILD_TYPE=Release" "-DVIEWER=ON" ..                                ;fi
+  - if [[ "$BUILD" == "osx-clang" ]]; then cmake "-DCMAKE_BUILD_TYPE=Release" "-DVIEWER=ON" ..                                           ;fi
+
+script:
+  - cmake --build .
+
+after_success:
+  - codecov --file coverage/lcov.info --disable search

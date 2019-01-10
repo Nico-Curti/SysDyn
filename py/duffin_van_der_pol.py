@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 19 22:30:58 2018
-
-@author: NICO
-"""
+#!/usr/bin/python
 
 import numpy as np # numerical library
 import matplotlib.pylab as plt # plot library
