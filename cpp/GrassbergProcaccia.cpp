@@ -5,11 +5,7 @@
 #include <memory>
 #include <array>
 
-#ifdef _MSC_VER
 #define LOG2 0.69314718055994529
-#else
-static constexpr float LOG2 = std::log(2.f); // 0.69314718055994529
-#endif
 
 template<typename T> auto GrassbergerProcaccia(T *x, T *y, const int &N, int omit_pts = 3)
 {
