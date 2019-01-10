@@ -8,7 +8,7 @@
 // g++ diffusion2D.cpp -O3 -std=c++11 `pkg-config opencv --cflags --libs`
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/contrib/contrib.hpp>
+//#include <opencv2/contrib/contrib.hpp>
 #endif
 #ifdef SAVEDAT
 #include <fstream>
@@ -165,7 +165,8 @@ int main(int argc, char **argv)
   cv::Mat U(dim, dim, CV_32FC1, u.data());
   cv::normalize(U, U, 0, 255, cv::NORM_MINMAX);
   U.convertTo( U, CV_8UC1 );
-  applyColorMap(U, U, cv::COLORMAP_JET);
+  // you need OpenCV contrib to applyColorMap !!!
+  //applyColorMap(U, U, cv::COLORMAP_JET);
   cv::namedWindow( "Turing Pattern", cv::WINDOW_NORMAL );// Create a window for display
   cv::imshow( "Turing Pattern", U );
   cv::waitKey(0);
