@@ -51,8 +51,8 @@ we rewrite the equations as
 
 */
 
-auto Vx = [&](const float &x, const float &y){ return A - (B+1)*x + y*x*x; };
-auto Vy = [&](const float &x, const float &y){ return B*x - x*x*y; };
+auto Vx = [](const float &x, const float &y){ return A - (B+1)*x + y*x*x; };
+auto Vy = [](const float &x, const float &y){ return B*x - x*x*y; };
 
 void diffusion2D(float *ut, float *vt, const int &dim, const float &dx)
 {
