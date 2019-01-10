@@ -9,8 +9,8 @@
 auto GaussSeidel(const std::array<std::array<float, 4>, 4> &A, const std::array<float, 4> &b, const int &N, const int &M)
 {
   const int ITERATION_LIMIT = static_cast<int>(1e20);
-  int cnt;
-  std::shared_ptr<float[]> x_new(new float[M]),
+  int cnt = 0;
+  std::unique_ptr<float[]> x_new(new float[M]),
                            res(new float[M]);
   float diff;
   for(int it = 0; it < ITERATION_LIMIT; ++it)

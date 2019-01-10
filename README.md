@@ -1,6 +1,6 @@
 | **Authors**  | **Project** | **Build Status**              | **Latest Version** | **License** |
 |:------------:|:-----------:|:-----------------------------:|:------------------:|:-----------:|
-|   N. Curti   |   SysDyn    | **Linux/MacOs** : [![Travis](https://travis-ci.com/Nico-Curti/SysDyn.svg?branch=master)](https://travis-ci.com/Nico-Curti/SysDyn) <br/> **Windows** : *miss*  | ![version](https://img.shields.io/badge/PyPI-v1.0.0-orange.svg?style=plastic) | [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Nico-Curti/SysDyn/blob/master/LICENSE)
+|   N. Curti   |   SysDyn    | **Linux/MacOs** : [![Travis](https://travis-ci.com/Nico-Curti/SysDyn.svg?branch=master)](https://travis-ci.com/Nico-Curti/SysDyn) <br/> **Windows** : [![appveyor](https://ci.appveyor.com/api/projects/status/iwcl52c5ngx92w94?svg=true)](https://ci.appveyor.com/project/Nico-Curti/sysdyn)  | ![version](https://img.shields.io/badge/PyPI-v1.0.0-orange.svg?style=plastic) | [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Nico-Curti/SysDyn/blob/master/LICENSE)
 
 <a href="https://github.com/physycom">
 <div class="image">

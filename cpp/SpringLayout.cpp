@@ -147,7 +147,7 @@ struct
       n.insert(edges[i].second);
     }
     int i = 0, Nnodes = static_cast<int>(n.size());
-    std::shared_ptr<node[]> nodes(new node[Nnodes]);
+    std::unique_ptr<node[]> nodes(new node[Nnodes]);
     while( i < iterations)
     {
       // Add in Coulomb-esque node-node repulsive forces

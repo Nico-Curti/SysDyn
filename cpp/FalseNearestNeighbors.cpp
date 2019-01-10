@@ -40,7 +40,7 @@ template<typename T> int FalseNearestNeighbors(T *x, const int &n, const int &ma
   T   mins,
       mean, sigma = std::sqrt(online_variance(x, 0, n, mean));
 
-  std::shared_ptr<T[]> ED(new T[n*(n-1)/2]);
+  std::unique_ptr<T[]> ED(new T[n*(n-1)/2]);
 
   for (int k = 1; k < maxEmbDim + 1; ++k)
   {

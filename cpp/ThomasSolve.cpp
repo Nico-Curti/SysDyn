@@ -6,7 +6,7 @@
 template<typename T> auto Thomas(const T* b, const T* a, T *c, T *d, const int &nb)
 {
   int i = 0;
-  std::shared_ptr<T[]> x(new T[nb]);
+  std::unique_ptr<T[]> x(new T[nb]);
   T id;
   c[i] /= b[i];
   d[i] /= b[i];
@@ -25,7 +25,7 @@ template<typename T> auto Thomas(const T* b, const T* a, T *c, T *d, const int &
 template<typename T> auto Thomas(const T* b, T* c, T* d, const int &nb)
 {
   int i = 0;
-  std::shared_ptr<T[]> x(new T[nb]);
+  std::unique_ptr<T[]> x(new T[nb]);
   T a = c[i],
     id;
   c[i] /= b[i];
@@ -46,7 +46,7 @@ template<typename T> auto Thomas(const T* b, T* c, T* d, const int &nb)
 
 int main(int argc, char **argv)
 {
-  std::shared_ptr<float[]> a(new float[2]),
+  std::unique_ptr<float[]> a(new float[2]),
                            b(new float[3]),
                            c(new float[2]),
                            d(new float[3]);

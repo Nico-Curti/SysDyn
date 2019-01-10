@@ -58,7 +58,7 @@ void diffusion2D(float *ut, float *vt, const int &dim, const float &dx)
 {
   int i, j, dim2 = dim*dim;
   float lap_u, lap_v;
-  std::shared_ptr<float[]> u(new float[dim2]),
+  std::unique_ptr<float[]> u(new float[dim2]),
                            v(new float[dim2]);
 
   for(int t = 0; t < ITER; ++t)
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
   os.close();
 #endif
 #ifdef VIEWER
-  cv::Mat U(dim, dim, CV_32FC1, u);
+  cv::Mat U(dim, dim, CV_32FC1, u.data());
   cv::normalize(U, U, 0, 255, cv::NORM_MINMAX);
   U.convertTo( U, CV_8UC1 );
   applyColorMap(U, U, cv::COLORMAP_JET);
