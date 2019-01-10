@@ -48,6 +48,22 @@ endif()
 #################################################################
 
 if (VIEWER)
+  if(FORCE_LOCAL_OPENCV)
+    find_package(OpenCV REQUIRED PATHS /usr/local/ NO_DEFAULT_PATH)
+  else()
+    if(APPLE)
+      find_package(OpenCV REQUIRED PATHS /usr/local/opt NO_DEFAULT_PATH)
+    else()
+      find_package(OpenCV REQUIRED)
+    endif()
+  endif()
+
+  if (OpenCV_FOUND)
+    message (STATUS "OpenCV found: ${OpenCV_INCLUDE_DIRS}")
+    add_definitions (-DOPENCV)
+    include_directories (${OpenCV_INCLUDE_DIRS})
+    list (APPEND linked_libs ${OpenCV_LIBRARIES})
+  endif()
   add_definitions (-DVIEWER)
 endif()
 
@@ -89,6 +105,7 @@ add_executable(ChemicalMasterEquation   ${CMAKE_SOURCE_DIR}/cpp/ChemicalMasterEq
 
 add_custom_target(diffusion2D_)
 add_executable(diffusion2D              ${CMAKE_SOURCE_DIR}/cpp/diffusion2D.cpp)
+target_link_libraries(diffusion2D_ ${linked_libs})
 
 add_custom_target(FalseNearestNeighbors_)
 add_executable(FalseNearestNeighbors   ${CMAKE_SOURCE_DIR}/cpp/FalseNearestNeighbors.cpp)
