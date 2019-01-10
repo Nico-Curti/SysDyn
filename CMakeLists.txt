@@ -100,26 +100,19 @@ message(STATUS ""                                                               
 #                         MAIN RULES                            #
 #################################################################
 
-add_custom_target(ChemicalMasterEquation_)
 add_executable(ChemicalMasterEquation   ${CMAKE_SOURCE_DIR}/cpp/ChemicalMasterEquation.cpp)
 
-add_custom_target(diffusion2D_)
 add_executable(diffusion2D              ${CMAKE_SOURCE_DIR}/cpp/diffusion2D.cpp)
-target_link_libraries(diffusion2D_ ${linked_libs})
+target_link_libraries(diffusion2D ${linked_libs})
 
-add_custom_target(FalseNearestNeighbors_)
 add_executable(FalseNearestNeighbors   ${CMAKE_SOURCE_DIR}/cpp/FalseNearestNeighbors.cpp)
 
-add_custom_target(GaussSeidelSolve_)
 add_executable(GaussSeidelSolve         ${CMAKE_SOURCE_DIR}/cpp/GaussSeidelSolve.cpp)
 
-add_custom_target(GrassbergerProcaccia_)
 add_executable(GrassbergerProcaccia     ${CMAKE_SOURCE_DIR}/cpp/GrassbergProcaccia.cpp)
 
-add_custom_target(SpringLayout_)
 add_executable(SpringLayout             ${CMAKE_SOURCE_DIR}/cpp/SpringLayout.cpp)
 
-add_custom_target(ThomasSolve_)
 add_executable(ThomasSolve              ${CMAKE_SOURCE_DIR}/cpp/ThomasSolve.cpp)
 
 #################################################################
