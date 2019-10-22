@@ -1,10 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import numpy as np # numerical library
+import numpy as np             # numerical library
 import matplotlib.pylab as plt # plot library
 
 __package__ = "Harmonic oscillator"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 Vx = lambda q, p : p
 Vy = lambda q, p : -q

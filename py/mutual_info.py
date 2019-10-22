@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import numpy as np                            # numerical library
 import matplotlib.pylab as plt                # plot library
@@ -6,7 +7,8 @@ from sklearn.metrics import mutual_info_score # mutual information algorithm
 from mpl_toolkits.mplot3d import Axes3D       # 3D plot
 
 __package__ = "Mutual information"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "(nico.curit2@unibo.it)"
 
 # lorentz formula
 Vx = lambda x, y, sigma : sigma*(y-x)
@@ -14,13 +16,14 @@ Vy = lambda x, y, z, r : -x*z + r*x - y
 Vz = lambda x, y, z, b : -b*z + x*y
 
 if __name__ == '__main__':
+
   dt      = .01
   it      = 10000
   sigma   = 16.
   b       = 4.
   r       = 45.92
-  x, y, z = np.empty(shape=(it)), np.empty(shape=(it)), np.empty(shape=(it))
-  x[0], y[0], z[0] = 10, 1, 1 # initial conditions
+  x, y, z = np.empty(shape=(it), dtype=float), np.empty(shape=(it), dtype=float), np.empty(shape=(it), dtype=float)
+  x[0], y[0], z[0] = (10, 1, 1) # initial conditions
 
   # euler integration
   for i in range(0, it-1):
@@ -34,7 +37,7 @@ if __name__ == '__main__':
                             None,
                             contingency=np.histogram2d(x, y, bins)[0])
   tau_max = 100
-  mi = np.empty(shape=(tau_max-1,))
+  mi = np.empty(shape=(tau_max-1,), dtype=float)
   for tau in range(1, tau_max):
     # mutual information between delay signal and original
     mi[tau-1] = mutual_info(x[tau:], x[:-tau], 100)

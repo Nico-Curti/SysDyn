@@ -1,16 +1,19 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import numpy as np # numerical library
 import matplotlib.pylab as plt # plot library
 from mpl_toolkits.mplot3d import Axes3D # 3D plot
 
 __package__ = "Duffin-Van Der Pool"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 # Duffin-Van Der Pol oscillator
 dv_der_pol = lambda x, y, z, mu, f, o, dt: (dt*y, dt*(mu*1-x*x)*y - x*x*x + f*np.cos(z), z + dt*o)
 
 if __name__ == '__main__':
+
   mu    = .2
   f     = 1.
   omega = .94

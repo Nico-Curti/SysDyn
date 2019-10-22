@@ -1,11 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import numpy as np # numerical library
-import matplotlib.pylab as plt # plot library
+import numpy as np                 # numerical library
+import matplotlib.pylab as plt     # plot library
 from scipy.integrate import odeint # python integrator
 
 __package__ = "Logistic Map"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 logistic = lambda x, t, mu : mu * (np.mod(x, 1) - np.mod(x**2, 1)) # logistic formula
 
@@ -16,7 +18,7 @@ if __name__ == '__main__':
   x0   = np.mod(.1, 1)
   mu   = 1.3
   t    = np.arange(0, dt*it, dt)
-  x    = np.empty(shape=(it))
+  x    = np.empty(shape=(it), dtype=float)
   x[0] = x0
 
   for i in range(0, it-1):

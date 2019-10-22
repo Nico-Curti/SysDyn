@@ -1,10 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import numpy as np # numerical library
+import numpy as np             # numerical library
 import matplotlib.pylab as plt # plot library
 
 __package__ = "Bifurcation logistic map x_{n+1} = \\mu x_n (1 - x_n)"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 logistic = lambda x, mu : 4*mu*x*(1-x)
 

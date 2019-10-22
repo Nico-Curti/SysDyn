@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import numpy as np
 import matplotlib.pylab as plt
@@ -7,7 +8,8 @@ import pandas as pd
 import seaborn as sns
 
 __package__ = "Grassberger-Procaccia algorithm"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 Vx = lambda x, y, sigma : sigma*(y-x)
 Vy = lambda x, y, z, r : -x*z + r*x - y

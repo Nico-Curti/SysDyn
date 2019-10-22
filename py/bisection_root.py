@@ -1,15 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import numpy as np # numerical library
+import numpy as np             # numerical library
 import matplotlib.pylab as plt # plot library
 
 __package__ = "Bisection method"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 f = lambda x : x**2 - 2
 bisection = lambda x0, x1 : (x0, x1) if f(x0)*f(x1) < 0 else (x1, x0)
 
 if __name__ == '__main__':
+
   n = 10000
   toll = 1e-4
   x0 = 5

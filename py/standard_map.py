@@ -1,17 +1,20 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import numpy as np             # numerical library
 import matplotlib.pylab as plt # plot library
 
 __package__ = "Pendulum Standard map vectorized"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curti2@unibo.it"
 
 if __name__ == '__main__':
+
   it    = 100
   size  = 5000
   k     = 1.
-  Q     = np.empty(shape=(size, it))
-  P     = np.empty(shape=(size, it))
+  Q     = np.empty(shape=(size, it), dtype=float)
+  P     = np.empty(shape=(size, it), dtype=float)
   Q[0]  = np.random.rand(it)
   P[0]  = np.random.rand(it)
   pi_2  = 2. * np.pi

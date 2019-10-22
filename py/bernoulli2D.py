@@ -1,15 +1,18 @@
-#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 
-import numpy as np # numerical library
-import matplotlib.pylab as plt # plot library
+import numpy as np                       # numerical library
+import matplotlib.pylab as plt           # plot library
 import matplotlib.animation as animation # animation plot
 
 __package__ = "Bernoulli2D"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 bernoulli2D = lambda x : np.mod(2*x, 1) # bernoulli formula
 
 if __name__ == '__main__':
+
   # initial condition
   N = 100 # number of points
   x = np.linspace(0, 1, N) # x steps

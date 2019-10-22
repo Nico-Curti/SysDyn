@@ -1,20 +1,23 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import numpy as np # numerical library
+import numpy as np             # numerical library
 import matplotlib.pylab as plt # plot library
 
 __package__ = "Newton Method"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "(nico.curit2@unibo.it)"
 
 f = lambda x : x**2 - 2 # function
 d = lambda x : 2*x # derivative
 newton = lambda x : x - f(x) / d(x) # newton formula
 
 if __name__ == '__main__':
+
   n = 10000
   toll = 1e-4
   x0 = 30
-  x = np.linspace(start = 0, stop = 10, num = n)
+  x = np.linspace(start=0, stop=10, num=n)
   y = f(x)
 
   step = [x0]

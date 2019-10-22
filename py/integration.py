@@ -1,9 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import numpy as np # numerical library
 
 __package__ = "Integration"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curit2@unibo.it"
 
 f          = lambda x : np.sin(x)
 rettangoli = lambda dx, N : sum( [dx * f(i * dx) for i in range(N)] )
@@ -11,6 +13,7 @@ trapezi    = lambda dx, N : sum( [dx * (f(i*dx) + f((i+1)*dx)) *.5 for i in rang
 simpson    = lambda dx, N : sum( [dx/6*(f(i*dx) + 4*f((i*dx + (i+1)*dx)*.5) + f((i+1)*dx)) for i in range(N)] )
 
 if __name__ == '__main__':
+
   truth = 1. - np.cos(1.) # sin primitive in [0, 1]
   dx    = 1.
   for n in range(1, 100):

@@ -1,23 +1,27 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import numpy as np             # numerical library
 import matplotlib.pylab as plt # plot library
 
 __package__ = "Secant Method"
-__author__  = "Nico Curti (nico.curit2@unibo.it)"
+__author__  = "Nico Curti"
+__email__   = "nico.curti2@unibo.it"
 
 f = lambda x: x**2 - 3 # function
 secant = lambda x0, x1 : x0 - (x1 - x0) / (f(x1) - f(x0)) * f(x0) # secant formula
 
 if __name__ == '__main__':
+
   n    = 10000
   toll = 1e-4
   x0   = 2
   x1   = 0
-  x    = np.linspace(start = 0, stop = 10, num = n)
+  x    = np.linspace(start=0, stop=10, num=n)
   y    = f(x)
   step = [x0]
   tst  = 1
+
   while tst >= toll:
     step.append( secant(x0, x1) ) # array of steps (redundant)
     x0 = x1 # update x0
@@ -31,3 +35,4 @@ if __name__ == '__main__':
   ax.set_xlabel("x", fontsize=14)
   ax.set_ylabel("f(x)", fontsize=14)
   ax.set_title("Secant method", fontsize=14)
+
