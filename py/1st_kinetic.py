@@ -12,6 +12,7 @@ __email__   = "nico.curit2@unibo.it"
 
 
 def conversion (y, t, alpha):
+
   product, reagents = y
   dp =  alpha * reagents
   dr = -alpha * reagents
@@ -19,6 +20,7 @@ def conversion (y, t, alpha):
   return (dp, dr)
 
 def update (val):
+
   alpha = salpha.val
   y0 = (sp0.val, sr0.val)
   res = odeint(conversion, y0, time, args=(alpha,))
@@ -32,7 +34,7 @@ if __name__ == '__main__':
 
 
   '''
-  A first order kineti is given by
+  A first order kinetic is given by
 
           dR/dt = - k*R
           dP/dt =   k*R

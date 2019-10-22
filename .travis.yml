@@ -16,19 +16,25 @@ matrix:
             - libopencv-dev
       env: BUILD=linux-gcc
 
-    - os: osx
+    - os: linux
       compiler: clang
+      name: ubuntu 14.04 - clang@6.0
+      dist: trusty
       addons:
         apt:
+          update: true
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-trusty-6.0
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
           packages:
-            - clang-7.0
+            - clang-6.0
+            - libstdc++-7-dev
+            - libclang-6.0-dev
+
       env:
-        - CXX=clang++-7
+        - MATRIX_EVAL="sudo apt install libjsoncpp0 && CC=clang-6.0 && CXX=clang++-6.0"
         - LINKER_FLAGS="-stdlib=libc++ -lc++abi"
-        - CXXFLAGS="-stdlib=libc++"
         - BUILD=osx-clang
 
 before_install:
