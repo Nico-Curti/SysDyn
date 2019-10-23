@@ -33,3 +33,5 @@ if __name__ == '__main__':
   fig = plt.figure(figsize=(8,8))
   ax  = Axes3D(fig)
   ax.plot(x, y, z)
+
+  plt.show()

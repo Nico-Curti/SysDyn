@@ -28,3 +28,5 @@ if __name__ == '__main__':
   ax.plot(Q, P, 'k,')
   ax.set_xlim(0, 1)
   ax.set_ylim(0, 1)
+
+  plt.show()

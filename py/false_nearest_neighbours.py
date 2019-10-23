@@ -64,3 +64,5 @@ if __name__ == '__main__':
   ax.set_title('Optimal Embedding Dimension with FNN', fontsize=16)
   ax.plot(embedm, Ind1[embedm], 'r.')
   plt.text(embedm, Ind1[embedm] + 100, "EmbDim = $%d$"%(embedm))
+
+  plt.show()

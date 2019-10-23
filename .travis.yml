@@ -2,6 +2,22 @@ language: cpp
 
 matrix:
   include:
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu 14.04 - gcc@7.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-7
+            - g++-7
+            - libopencv-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
     - os: linux
       compiler: gcc
       name: ubuntu - gcc
@@ -12,9 +28,9 @@ matrix:
           packages:
             - gcc-8
             - g++-8
-            - ninja-build
             - libopencv-dev
-      env: BUILD=linux-gcc
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
     - os: linux
       compiler: clang
@@ -31,58 +47,36 @@ matrix:
             - clang-6.0
             - libstdc++-7-dev
             - libclang-6.0-dev
+            - libopencv-dev
 
       env:
-        - MATRIX_EVAL="sudo apt install libjsoncpp0 && CC=clang-6.0 && CXX=clang++-6.0"
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
         - LINKER_FLAGS="-stdlib=libc++ -lc++abi"
-        - BUILD=osx-clang
 
 before_install:
-  - pip install --user codecov
-
-  - if [[ "$BUILD" == "osx-clang" ]]; then wget --no-check-certificate https://cmake.org/files/v3.13/cmake-3.13.1-Darwin-x86_64.tar.gz   ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then tar -xzf cmake-3.13.1-Darwin-x86_64.tar.gz                                                    ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then export PATH=$PWD/cmake-3.13.1-Darwin-x86_64/CMake.app/Contents/bin:$PATH                      ;fi
-
-  ###############################################################################################################################################
-
-  - if [[ "$BUILD" == "linux-gcc" ]]; then wget --no-check-certificate https://cmake.org/files/v3.13/cmake-3.13.1-Linux-x86_64.tar.gz    ;fi
-  - if [[ "$BUILD" == "linux-gcc" ]]; then tar -xzf cmake-3.13.1-Linux-x86_64.tar.gz                                                     ;fi
-  - if [[ "$BUILD" == "linux-gcc" ]]; then export PATH=$PWD/cmake-3.13.1-Linux-x86_64/bin:$PATH                                          ;fi
+  - travis_retry eval "${MATRIX_EVAL}"
 
 install:
-  - if [[ "$BUILD" == "osx-clang" ]]; then brew update                                                                                   ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then brew install llvm                                                                             ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then brew install ninja                                                                            ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then brew install opencv                                                                           ;fi
-  #- if [[ "$BUILD" == "osx-clang" ]]; then export CC=/usr/local/bin/clang-7                                                              ;fi
-  #- if [[ "$BUILD" == "osx-clang" ]]; then export CXX=/usr/local/bin/clang-7                                                             ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then export CMAKE_C_COMPILER=${CC}                                                                 ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then export CMAKE_CXX_COMPILER=${CXX}                                                              ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then export CMAKE_LINKER=clang++-7                                                                 ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then ${CXX} --version                                                                              ;fi
-  ###############################################################################################################################################
+  #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo softwareupdate -l                                                                              ;fi
+  #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then softwareupdate -i "Command Line Tools (macOS High Sierra version 10.13) for Xcode-10.1"             ;fi
+  # CMake upgrade
 
-  # Link gcc-7 and g++-7 to their standard commands
-  - if [[ "$BUILD" == "linux-gcc" ]]; then sudo ln -s /usr/bin/gcc-8 /usr/local/bin/gcc                                                  ;fi
-  - if [[ "$BUILD" == "linux-gcc" ]]; then sudo ln -s /usr/bin/g++-8 /usr/local/bin/g++                                                  ;fi
-  # Export CC and CXX to tell cmake which compiler to use
-  - if [[ "$BUILD" == "linux-gcc" ]]; then export CC=/usr/bin/gcc-8                                                                      ;fi
-  - if [[ "$BUILD" == "linux-gcc" ]]; then export CXX=/usr/bin/g++-8                                                                     ;fi
-  # Check versions of gcc, g++ and cmake
-  - if [[ "$BUILD" == "linux-gcc" ]]; then gcc -v && g++ -v && cmake --version                                                           ;fi
-  # Check version of opencv installed
-  - if [[ "$BUILD" == "linux-gcc" ]]; then pkg-config --modversion opencv                                                                ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx"  ]]; then wget --no-check-certificate https://cmake.org/files/v3.13/cmake-3.13.1-Darwin-x86_64.tar.gz        ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx"  ]]; then tar -xzf cmake-3.13.1-Darwin-x86_64.tar.gz                                                         ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx"  ]]; then export PATH=$PWD/cmake-3.13.1-Darwin-x86_64/CMake.app/Contents/bin:$PATH                           ;fi
+  ###############################################################################################################################################
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget --no-check-certificate https://cmake.org/files/v3.13/cmake-3.13.1-Linux-x86_64.tar.gz         ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar -xzf cmake-3.13.1-Linux-x86_64.tar.gz                                                          ;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export PATH=$PWD/cmake-3.13.1-Linux-x86_64/bin:$PATH                                               ;fi
 
 before_script:
   - mkdir build
   - cd build
   - cmake --version
-  - if [[ "$BUILD" == "linux-gcc" ]]; then cmake -G "Ninja" "-DCMAKE_BUILD_TYPE=Release" "-DVIEWER=ON" ..                                ;fi
-  - if [[ "$BUILD" == "osx-clang" ]]; then cmake "-DCMAKE_BUILD_TYPE=Release" "-DVIEWER=ON" ..                                           ;fi
+  - cmake "-DCMAKE_BUILD_TYPE=Release" "-DVIEWER=ON" ..
 
 script:
-  - cmake --build .
+  - cmake --build . --target install
 
 after_success:
   - codecov --file coverage/lcov.info --disable search

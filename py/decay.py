@@ -85,3 +85,5 @@ if __name__ == '__main__':
   salpha.on_changed(update)
   sy0.on_changed(update)
   ax.legend(loc='best', fontsize=14)
+
+  plt.show()

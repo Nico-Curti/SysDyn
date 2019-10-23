@@ -78,3 +78,5 @@ if __name__ == '__main__':
   sp0.on_changed(update)
   sr0.on_changed(update)
   ax.legend(loc='best', fontsize=14)
+
+  plt.show()

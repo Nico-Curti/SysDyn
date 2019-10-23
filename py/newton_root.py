@@ -34,3 +34,5 @@ if __name__ == '__main__':
   ax.set_xlabel("x", fontsize=14)
   ax.set_ylabel("f(x)", fontsize=14)
   ax.set_title("Newton method", fontsize=14)
+
+  plt.show()

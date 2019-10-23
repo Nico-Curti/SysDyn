@@ -31,3 +31,5 @@ if __name__ == '__main__':
   ax.plot(t, xt, 'r-', lw=2, alpha=.5, label="scipy")
   ax.set_ylim(0, 1)
   ax.legend(loc='best', fontsize=14)
+
+  plt.show()

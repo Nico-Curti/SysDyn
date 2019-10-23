@@ -37,3 +37,5 @@ if __name__ == '__main__':
   ax3.plot(time, q_si, 'b-', label="q simplettic")
   ax3.plot(time, p_si, 'r-', label="p simplettic")
   ax4.plot(q_si, p_si, 'b-', label="phase space")
+
+  plt.show()

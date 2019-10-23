@@ -37,3 +37,4 @@ if __name__ == '__main__':
                                     blit=True,
                                     repeat_delay=100
                                    )
+  plt.show()

@@ -31,3 +31,5 @@ if __name__ == '__main__':
   ax.set_ylabel("$x_k$", fontsize=14)
   ax.text(critical_y, critical_x, "$\\mu = %.3f$"%critical_x)
   ax.set_xlim(.5, 1.01)
+
+  plt.show()

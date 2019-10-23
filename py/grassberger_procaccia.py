@@ -53,3 +53,5 @@ if __name__ == '__main__':
                      y="yp",
                      data=data,
                      ax=ax).legend()
+
+  plt.show()

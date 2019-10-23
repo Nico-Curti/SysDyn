@@ -60,3 +60,4 @@ if __name__ == '__main__':
   ax = Axes3D(fig)
   ax.plot(x[:-optimal_delay*2], x[optimal_delay:-optimal_delay], x[:-2*optimal_delay])
 
+  plt.show()

@@ -67,3 +67,4 @@ if __name__ == '__main__':
                                     repeat_delay=100
                                     )
   # movie.save('diffusion.mp4', writer=writer)
+  plt.show()
