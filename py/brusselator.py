@@ -31,6 +31,34 @@ Then following the Mass Law and combining the previous equations we obtain
 
                         dX / dt = A - Bx + X^2Y - X
                         dY / dt = BX - X^2Y
+
+
+System stability
+
+We have to evaluate the derivate of the equations as
+
+                        A - Bx + X^2Y - X = 0
+                        BX - X^2Y = 0
+
+and solving the system we obtain a single critical point
+
+                         (A, B / A)
+
+Now we have to insert this point in the equation and solve the Jacobian matrix
+
+
+                              B -1    A^2
+                      J = [                 ]
+                              -B     -A^2
+
+Now the characteristic equation (aka determinant) is given by
+
+                   L^2 + (1 - B + A^2)*L + A^2 = 0
+
+and thus the eigenvectors of J depend by the two equations
+
+            1 - B + A^2        &        Delta = (1 - B + A^2)^2 - 4A^2
+
 '''
 
 Vx = lambda x, y, A, B : A + x*x*y - B*x - x
@@ -96,6 +124,7 @@ if __name__ == '__main__':
 
   for i in range(0, iterations):
     x[i + 1], y[i + 1] = RK4(x[i], y[i], dt, A, B)
+  # 2.46 s ± 145 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 
   fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(16, 6))
   fig.subplots_adjust(bottom=0.25)
