@@ -7,7 +7,7 @@ import matplotlib.animation as animation # animation plot
 
 __package__ = "Bernoulli2D"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 bernoulli2D = lambda x : np.mod(2*x, 1) # bernoulli formula
 

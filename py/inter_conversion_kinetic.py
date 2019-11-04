@@ -8,7 +8,7 @@ from scipy.integrate import odeint
 
 __package__ = "1st Order Kinetic reaction"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 
 def conversion (y, t, kf, kb):

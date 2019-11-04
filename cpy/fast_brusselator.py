@@ -4,6 +4,7 @@
 import numpy as np             # numerical library
 import matplotlib.pylab as plt # plot library
 from matplotlib.widgets import Slider
+from fastBrusselator import integrate
 
 __package__ = "Brusselator"
 __author__  = "Nico Curti"
@@ -61,37 +62,12 @@ and thus the eigenvectors of J depend by the two equations
 
 '''
 
-Vx = lambda x, y, A, B : A + x*x*y - B*x - x
-Vy = lambda x, y, A, B : B*x - x*x*y
-
-
-def RK4 (x, y, dt, A, B):
-
-  kx1 = Vx(x, y, A, B)
-  ky1 = Vy(x, y, A, B)
-
-  kx2 = Vx(x, y, A, B) + dt * .5 * ky1
-  ky2 = Vy(x, y, A, B) - dt * .5 * kx1
-
-  kx3 = Vx(x, y, A, B) + dt * .5 * ky2
-  ky3 = Vy(x, y, A, B) - dt * .5 * kx2
-
-  kx4 = Vx(x, y, A, B) + dt * ky3
-  ky4 = Vy(x, y, A, B) - dt * kx3
-
-  x_new = x + dt / 6 * (kx1 + 2. * kx2 + 2. * kx3 + kx4)
-  y_new = y + dt / 6 * (ky1 + 2. * ky2 + 2. * ky3 + ky4)
-
-  return (x_new, y_new)
-
-
 def update (val):
 
   A = sA.val
   B = sB.val
 
-  for i in range(0, iterations):
-    x[i + 1], y[i + 1] = RK4(x[i], y[i], dt, A, B)
+  integrate(x, y, A, B, dt, iterations)
 
   l1.set_ydata(x[:-1])
   l2.set_ydata(y[:-1])
@@ -122,9 +98,9 @@ if __name__ == '__main__':
   x[0] = 1.6
   y[0] = 2.8
 
-  for i in range(0, iterations):
-    x[i + 1], y[i + 1] = RK4(x[i], y[i], dt, A, B)
-  # 2.46 s ± 145 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  integrate(x, y, A, B, dt, iterations)
+  # 4.97 ms ± 369 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+  # SpeedUp: 494x
 
   fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(16, 6))
   fig.subplots_adjust(bottom=0.25)

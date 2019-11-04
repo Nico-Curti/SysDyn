@@ -7,7 +7,7 @@ import matplotlib.animation as animation # animation plot
 
 __package__ = "Diffusion 2D model"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 g = lambda u, v, A, B : B*u - v*u*u
 f = lambda u, v, A, B : A - (B+1)*u + v*u*u

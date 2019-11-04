@@ -5,7 +5,7 @@ import numpy as np # numerical library
 
 __package__ = "Integration"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 f          = lambda x : np.sin(x)
 rettangoli = lambda dx, N : sum( [dx * f(i * dx) for i in range(N)] )

@@ -7,7 +7,7 @@ import scipy
 
 __package__ = "False Nearest Neighbours"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 Vx = lambda x, y, sigma : sigma*(y-x)
 Vy = lambda x, y, z, r : -x*z + r*x - y

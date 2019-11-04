@@ -6,7 +6,7 @@ import matplotlib.pylab as plt # plot library
 
 __package__ = "Bisection method"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 f = lambda x : x**2 - 2
 bisection = lambda x0, x1 : (x0, x1) if f(x0)*f(x1) < 0 else (x1, x0)

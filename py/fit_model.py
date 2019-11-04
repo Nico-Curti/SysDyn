@@ -8,7 +8,7 @@ from scipy.optimize import curve_fit # fit function
 
 __package__ = "Fit example"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 def derivate (y, t, alpha=1):
   return -alpha * y

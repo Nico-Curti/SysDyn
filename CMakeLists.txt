@@ -71,6 +71,9 @@ if (MSVC)
   add_definitions (-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
+
+set (OUT_DIR      ${CMAKE_SOURCE_DIR}/bin             CACHE PATH "Path where outputs will be installed"        FORCE)
+
 #################################################################
 #                          SUMMARY                              #
 #################################################################
@@ -119,10 +122,10 @@ add_executable(ThomasSolve              ${CMAKE_SOURCE_DIR}/cpp/ThomasSolve.cpp)
 #                          INSTALLERS                           #
 #################################################################
 
-install(TARGETS ChemicalMasterEquation      DESTINATION ${CMAKE_SOURCE_DIR}/${OUT_DIR})
-install(TARGETS diffusion2D                 DESTINATION ${CMAKE_SOURCE_DIR}/${OUT_DIR})
-install(TARGETS FalseNearestNeighbors       DESTINATION ${CMAKE_SOURCE_DIR}/${OUT_DIR})
-install(TARGETS GaussSeidelSolve            DESTINATION ${CMAKE_SOURCE_DIR}/${OUT_DIR})
-install(TARGETS GrassbergerProcaccia        DESTINATION ${CMAKE_SOURCE_DIR}/${OUT_DIR})
-install(TARGETS SpringLayout                DESTINATION ${CMAKE_SOURCE_DIR}/${OUT_DIR})
-install(TARGETS ThomasSolve                 DESTINATION ${CMAKE_SOURCE_DIR}/${OUT_DIR})
+install(TARGETS ChemicalMasterEquation      DESTINATION ${OUT_DIR})
+install(TARGETS diffusion2D                 DESTINATION ${OUT_DIR})
+install(TARGETS FalseNearestNeighbors       DESTINATION ${OUT_DIR})
+install(TARGETS GaussSeidelSolve            DESTINATION ${OUT_DIR})
+install(TARGETS GrassbergerProcaccia        DESTINATION ${OUT_DIR})
+install(TARGETS SpringLayout                DESTINATION ${OUT_DIR})
+install(TARGETS ThomasSolve                 DESTINATION ${OUT_DIR})

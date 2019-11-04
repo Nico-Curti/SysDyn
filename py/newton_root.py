@@ -6,7 +6,7 @@ import matplotlib.pylab as plt # plot library
 
 __package__ = "Newton Method"
 __author__  = "Nico Curti"
-__email__   = "(nico.curit2@unibo.it)"
+__email__   = "nico.curti2@unibo.it"
 
 f = lambda x : x**2 - 2 # function
 d = lambda x : 2*x # derivative

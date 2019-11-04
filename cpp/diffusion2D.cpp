@@ -8,7 +8,7 @@
 // g++ diffusion2D.cpp -O3 -std=c++11 `pkg-config opencv --cflags --libs`
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-//#include <opencv2/contrib/contrib.hpp>
+#include <opencv2/contrib/contrib.hpp>
 #endif
 #ifdef SAVEDAT
 #include <fstream>
@@ -150,6 +150,19 @@ int main(int argc, char **argv)
     os.write( (const char *) &u[i], sizeof( float ));
   os.close();
 #endif
+#ifdef VIEWER
+  std::array<float, dim*dim> _u = u;
+  cv::Mat Uinit(dim, dim, CV_32FC1, _u.data());
+  cv::normalize(Uinit, Uinit, 0, 255, cv::NORM_MINMAX);
+  Uinit.convertTo( Uinit, CV_8UC1 );
+  // you need OpenCV contrib to applyColorMap !!!
+  cv :: applyColorMap(Uinit, Uinit, cv::COLORMAP_JET);
+  cv::namedWindow( "Turing Pattern - Init", cv::WINDOW_NORMAL );// Create a window for display
+  cv::imshow( "Turing Pattern - Init", Uinit );
+  cv::waitKey(0);
+  Uinit.release();
+#endif
+
   auto start = std::chrono::steady_clock::now();
   diffusion2D(u.data(), v.data(), dim, dx);
   auto duration = std::chrono::duration_cast<std::chrono::seconds> (std::chrono::steady_clock::now() - start);
@@ -166,7 +179,7 @@ int main(int argc, char **argv)
   cv::normalize(U, U, 0, 255, cv::NORM_MINMAX);
   U.convertTo( U, CV_8UC1 );
   // you need OpenCV contrib to applyColorMap !!!
-  //applyColorMap(U, U, cv::COLORMAP_JET);
+  cv :: applyColorMap(U, U, cv::COLORMAP_JET);
   cv::namedWindow( "Turing Pattern", cv::WINDOW_NORMAL );// Create a window for display
   cv::imshow( "Turing Pattern", U );
   cv::waitKey(0);

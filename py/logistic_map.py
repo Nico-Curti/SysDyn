@@ -7,7 +7,7 @@ from scipy.integrate import odeint # python integrator
 
 __package__ = "Logistic Map"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 logistic = lambda x, t, mu : mu * (np.mod(x, 1) - np.mod(x**2, 1)) # logistic formula
 

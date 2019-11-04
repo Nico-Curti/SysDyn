@@ -7,7 +7,7 @@ from matplotlib.widgets import Slider
 
 __package__ = "0 Order Kinetic reaction"
 __author__  = "Nico Curti"
-__email__   = "nico.curit2@unibo.it"
+__email__   = "nico.curti2@unibo.it"
 
 
 def update (val):

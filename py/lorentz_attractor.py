@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D # 3D plot
 
 __package__ = "Lorentz attractor"
 __author__  = "Nico Curti"
-__email__   = "(nico.curit2@unibo.it)"
+__email__   = "nico.curti2@unibo.it"
 
 # lorentz formula
 Vx = lambda x, y, sigma : sigma*(y-x)
