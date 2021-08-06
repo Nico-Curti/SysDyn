@@ -42,3 +42,6 @@ bld/
 [Oo]bj/
 .snakemake/
 benchmark/
+cpy/*.cpp
+*.egg-info
+*_checkpoints

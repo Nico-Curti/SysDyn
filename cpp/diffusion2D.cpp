@@ -6,9 +6,7 @@
 #include <chrono>
 #ifdef VIEWER
 // g++ diffusion2D.cpp -O3 -std=c++11 `pkg-config opencv --cflags --libs`
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/contrib/contrib.hpp>
+#include <opencv2/opencv.hpp>
 #endif
 #ifdef SAVEDAT
 #include <fstream>
