@@ -29,7 +29,7 @@ if __name__ == '__main__':
   ev0  = G
   for i in range(1, time):
     ev = bernoulli2D(ev0)
-    ims[i-1] = [plt.imshow( ev, animated=True )]
+    ims[i-1] = [plt.imshow( ev, animated=True, cmap='jet' )]
     ev0 = ev
   movie = animation.ArtistAnimation(fig,
           								          ims,

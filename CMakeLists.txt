@@ -13,7 +13,6 @@ add_definitions (-DMAJOR=${MAJOR} -DMINOR=${MINOR} -DREVISION=${REVISION})
 #                         COMPILE OPTIONS                       #
 #################################################################
 
-option (VIEWER     "Enable OpenCV support" OFF  )
 
 #################################################################
 #                         SETTING VARIABLES                     #
@@ -47,25 +46,32 @@ endif()
 #                         PARSE OPTIONS                         #
 #################################################################
 
-if (VIEWER)
-  if(FORCE_LOCAL_OPENCV)
-    find_package(OpenCV REQUIRED PATHS /usr/local/ NO_DEFAULT_PATH)
-  else()
-    if(APPLE)
-      find_package(OpenCV REQUIRED PATHS /usr/local/opt NO_DEFAULT_PATH)
-    else()
-      find_package(OpenCV REQUIRED)
-    endif()
-  endif()
+if (FORCE_LOCAL_OPENCV)
+  #find_package (OpenCV COMPONENTS video text core imgproc imgcodecs highgui plot REQUIRED PATHS ${OpenCV_PATH} NO_DEFAULT_PATH)
+  find_package (OpenCV REQUIRED PATHS ${OpenCV_PATH} NO_DEFAULT_PATH)
+else ()
+  if (APPLE)
+    #find_package (OpenCV COMPONENTS video text core imgproc imgcodecs highgui plot REQUIRED PATHS /usr/local/opt NO_DEFAULT_PATH)
+    find_package (OpenCV REQUIRED PATHS /usr/local/opt NO_DEFAULT_PATH)
+  else ()
+    #find_package (OpenCV COMPONENTS video text core imgproc imgcodecs highgui plot REQUIRED)
+    find_package (OpenCV REQUIRED)
+  endif ()
+endif ()
 
-  if (OpenCV_FOUND)
-    message (STATUS "OpenCV found: ${OpenCV_INCLUDE_DIRS}")
-    add_definitions (-DOPENCV)
-    include_directories (${OpenCV_INCLUDE_DIRS})
-    list (APPEND linked_libs ${OpenCV_LIBRARIES})
-  endif()
-  add_definitions (-DVIEWER)
-endif()
+if (OpenCV_FOUND)
+  message (STATUS "OpenCV found: ${OpenCV_INCLUDE_DIRS}")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOPENCV")
+  include_directories (${OpenCV_INCLUDE_DIRS})
+
+  list(APPEND linked_libs ${OpenCV_LIBS})
+endif ()
+
+message (STATUS "Looking for pthread library")
+set (CMAKE_THREAD_PREFER_PTHREAD ON)
+find_package (Threads REQUIRED)
+list (APPEND linked_libs Threads::Threads )
+
 
 if (MSVC)
   add_definitions (-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)
@@ -96,35 +102,38 @@ foreach(FLAG ${linked_libs})
   message(STATUS "                    * ${FLAG}"                                      )
 endforeach(FLAG)
 message(STATUS ""                                                                     )
-message(STATUS "   VIEWER support : ${VIEWER}"                                        )
-message(STATUS ""                                                                     )
 
 #################################################################
 #                         MAIN RULES                            #
 #################################################################
 
 add_executable(ChemicalMasterEquation   ${CMAKE_SOURCE_DIR}/cpp/ChemicalMasterEquation.cpp)
+target_link_libraries(ChemicalMasterEquation ${linked_libs})
 
-add_executable(diffusion2D              ${CMAKE_SOURCE_DIR}/cpp/diffusion2D.cpp)
-target_link_libraries(diffusion2D ${linked_libs})
+add_executable(brusselator              ${CMAKE_SOURCE_DIR}/cpp/brusselator.cpp)
+target_link_libraries(brusselator ${linked_libs})
 
-add_executable(FalseNearestNeighbors   ${CMAKE_SOURCE_DIR}/cpp/FalseNearestNeighbors.cpp)
+add_executable(bernoulli2D              ${CMAKE_SOURCE_DIR}/cpp/bernoulli2D.cpp)
+target_link_libraries(bernoulli2D ${linked_libs})
 
 add_executable(GaussSeidelSolve         ${CMAKE_SOURCE_DIR}/cpp/GaussSeidelSolve.cpp)
+target_link_libraries(GaussSeidelSolve ${linked_libs})
 
 add_executable(GrassbergerProcaccia     ${CMAKE_SOURCE_DIR}/cpp/GrassbergProcaccia.cpp)
 
 add_executable(SpringLayout             ${CMAKE_SOURCE_DIR}/cpp/SpringLayout.cpp)
+target_link_libraries(SpringLayout ${linked_libs})
 
 add_executable(ThomasSolve              ${CMAKE_SOURCE_DIR}/cpp/ThomasSolve.cpp)
+target_link_libraries(ThomasSolve ${linked_libs})
 
 #################################################################
 #                          INSTALLERS                           #
 #################################################################
 
 install(TARGETS ChemicalMasterEquation      DESTINATION ${OUT_DIR})
-install(TARGETS diffusion2D                 DESTINATION ${OUT_DIR})
-install(TARGETS FalseNearestNeighbors       DESTINATION ${OUT_DIR})
+install(TARGETS brusselator                 DESTINATION ${OUT_DIR})
+install(TARGETS bernoulli2D                 DESTINATION ${OUT_DIR})
 install(TARGETS GaussSeidelSolve            DESTINATION ${OUT_DIR})
 install(TARGETS GrassbergerProcaccia        DESTINATION ${OUT_DIR})
 install(TARGETS SpringLayout                DESTINATION ${OUT_DIR})

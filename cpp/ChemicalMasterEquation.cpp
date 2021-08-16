@@ -1,15 +1,13 @@
+//g++ ChemicalMasterEquation.cpp -O3 -std=c++11 `pkg-config opencv --cflags --libs` -o CME
 #include <iostream>
-#include <numeric>
-#include <algorithm>
-#include <vector>
-#include <array>
-#include <cmath>
+#include <opencv2/opencv.hpp>
+#include <opencv2/plot.hpp>
 
 static constexpr float A  = 2.f;
 static constexpr float B  = 5.2f;
 static constexpr float dt = .01f;
 static constexpr int ITER = 10;
-static constexpr int NUM_REAC = 4;
+
 /*
                        Brusselator - Stochastic Approach
 
@@ -64,7 +62,8 @@ In conclusion the CME system will be:
 
 */
 
-template<typename T> inline void reaction(const T &x, const T &y, T *w, const T &noise)
+void reaction (const float & x, const float & y,
+               float * w, const float & noise)
 {
   w[0] = A * noise;
   w[1] = B * x;
@@ -72,68 +71,97 @@ template<typename T> inline void reaction(const T &x, const T &y, T *w, const T 
   w[3] = x * (x - 1) * y / (noise * noise);
 }
 
-template<typename T> inline void reac_step(T &x, T &y, T *comp, const T &act_step)
+void reac_step (float & x, float & y,
+                const float * comp, const float & act_step)
 {
-  if(act_step < comp[0]) ++x;
+  if     (act_step < comp[0]) ++x;
   else if(act_step < comp[1]) {--x; ++y;}
   else if(act_step < comp[2]) --x;
   else if(act_step < comp[3]) {++x; --y;}
 }
 
-template<typename T> void CME(std::vector<T> &x, std::vector<T> &y, const T &omega, unsigned int seed = 123)
+void CME (std :: vector < float > & x, std :: vector < float > & y,
+          const float & omega, std :: size_t seed = 123)
 {
-  T trans = static_cast<T>(0.),
-    told  = static_cast<T>(0.),
-    t     = static_cast<T>(0.),
-    tmpx  = x[0],
-    tmpy  = y[0],
-    z1, z2, tau, uct;
-  std::array<T, NUM_REAC> w, c;
-  std::srand(seed);
+  float trans = 0.f;
+  float t_old = 0.f;
+  float t     = 0.f;
+  float tmp_x = x[0];
+  float tmp_y = y[0];
 
-  while(t <= ITER + trans)
+  std :: array < float, 4 > w;
+  std :: array < float, 4 > c;
+  std :: srand(seed);
+
+  while (t <= ITER + trans)
   {
-#ifdef DEBUG
-    std::cout << "Time " << t << std::endl;
-#endif
-    reaction(tmpx, tmpy, w.data(), omega);
-    c[0] = w[0];
-    for(int j = 1; j < NUM_REAC; ++j) c[j] = c[j-1] + w[j];
 
-    z1 = static_cast <T> (std::rand()) / static_cast <T> (RAND_MAX);
-    z2 = static_cast <T> (std::rand()) / static_cast <T> (RAND_MAX);
-    tau = - std::log(z1) / c[NUM_REAC - 1];
-    uct = z2 * c[NUM_REAC - 1];
+    std :: cout << "\rTime " << t << std :: flush;
+
+    reaction(tmp_x, tmp_y, w.data(), omega);
+
+    c[0] = w[0];
+
+    for (int32_t j = 1; j < 4; ++j)
+      c[j] = c[j-1] + w[j];
+
+    const float z1 = static_cast < float > (std :: rand()) / static_cast < float > (RAND_MAX);
+    const float z2 = static_cast < float > (std :: rand()) / static_cast < float > (RAND_MAX);
+    const float tau = - std :: log(z1) / c[3];
+    const float uct = z2 * c[3];
+
     t += tau;
-    reac_step(tmpx, tmpy, c.data(), uct);
-    if(t > trans && t > told + dt)
+
+    reac_step(tmp_x, tmp_y, c.data(), uct);
+
+    if (t > trans && t > t_old + dt)
     {
-      x.push_back(tmpx);
-      y.push_back(tmpy);
-      told = t;
+      x.push_back(tmp_x);
+      y.push_back(tmp_y);
+      t_old = t;
     }
   }
 }
 
-int main(int argc, char **argv)
+int main (int argc, char ** argv)
 {
-  const float omega   = 1000.f,
-              x_start = 1.6f,
-              y_start = 2.8f;
-  std::vector<float> x, y;
-  x.push_back(x_start);
-  y.push_back(y_start);
+  const float omega   = 1000.f;
+  const float x_start = 1.6f;
+  const float y_start = 2.8f;
 
-  CME(x, y, omega);
+  std :: vector < float > x = {x_start};
+  std :: vector < float > y = {y_start};
 
-#ifdef DEBUG
-  std::cout << "x = [";
-  for(const auto &i : x) std::cout << i << ",";
-  std::cout << "]" << std::endl;
-  std::cout << "y = [";
-  for(const auto &i : y) std::cout << i << ",";
-  std::cout << "]" << std::endl;
-#endif
+  CME (x, y, omega);
+
+  cv :: Mat plot_x;
+  cv :: Mat plot_y;
+
+  cv :: Ptr < cv :: plot :: Plot2d > plot = cv :: plot :: Plot2d :: create(cv :: Mat(x));
+  plot->setPlotBackgroundColor( cv :: Scalar( 0, 0, 0 ) );
+  plot->setPlotLineColor( cv :: Scalar( 255, 0, 0 ) );
+  plot->setPlotAxisColor( cv :: Scalar( 255, 255, 255 ) );
+  plot->setPlotLineWidth(2);
+  plot->setInvertOrientation(true);
+  plot->setShowText(false);
+
+  plot->render( plot_x );
+
+  cv :: Mat plot_res;
+
+  plot = cv :: plot :: Plot2d :: create(cv :: Mat(y));
+  plot->setPlotAxisColor( cv :: Scalar( 0, 0, 0 ) );
+  plot->setPlotLineColor( cv :: Scalar( 0, 0, 255 ) );
+  plot->setPlotLineWidth(2);
+  plot->setInvertOrientation(true);
+  plot->setShowText(false);
+  plot->render( plot_y );
+
+  plot_res = plot_x | plot_y;
+
+  cv :: namedWindow("Brusselator CME", cv :: WINDOW_FULLSCREEN);
+  cv :: moveWindow("Brusselator CME", 0, 10);
+  cv :: imshow("Brusselator CME", plot_res);
 
   return 0;
 }
