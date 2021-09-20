@@ -10,77 +10,26 @@ __author__  = "Nico Curti"
 __email__   = "nico.curti2@unibo.it"
 
 
-'''
-                  Brusselator Model - Chemical Reactions
-
-                                A -> X
-                            B + X -> Y + C
-                           2X + Y -> 3X
-                                X -> D
-
-We can study the model assuming that A, B, C and D concentrations remain
-constants. In this way the only variables of the system are X and Y.
-The equations can be rewritten as
-
-              dX / dt = +V1            dY / dt = 0
-              dX / dt = -V2            dY / dt = +V2
-              dX / dt = +V3            dY / dt = -V3
-              dX / dt = -V4            dY / dt = 0
-
-Then following the Mass Law and combining the previous equations we obtain
-
-                        dX / dt = A - Bx + X^2Y - X
-                        dY / dt = BX - X^2Y
-
-
-System stability
-
-We have to evaluate the derivate of the equations as
-
-                        A - Bx + X^2Y - X = 0
-                        BX - X^2Y = 0
-
-and solving the system we obtain a single critical point
-
-                         (A, B / A)
-
-Now we have to insert this point in the equation and solve the Jacobian matrix
-
-
-                              B -1    A^2
-                      J = [                 ]
-                              -B     -A^2
-
-Now the characteristic equation (aka determinant) is given by
-
-                   L^2 + (1 - B + A^2)*L + A^2 = 0
-
-and thus the eigenvectors of J depend by the two equations
-
-            1 - B + A^2        &        Delta = (1 - B + A^2)^2 - 4A^2
-
-'''
-
 Vx = lambda x, y, A, B : A + x*x*y - B*x - x
 Vy = lambda x, y, A, B : B*x - x*x*y
 
 
 def RK4 (x, y, dt, A, B):
 
-  kx1 = Vx(x, y, A, B)
-  ky1 = Vy(x, y, A, B)
+  kx1 = dt * Vx(x, y, A, B)
+  ky1 = dt * Vy(x, y, A, B)
 
-  kx2 = Vx(x, y, A, B) + dt * .5 * ky1
-  ky2 = Vy(x, y, A, B) - dt * .5 * kx1
+  kx2 = dt * Vx(x * .5 * kx1, y + .5 * ky1, A, B)
+  ky2 = dt * Vy(x * .5 * kx1, y + .5 * ky1, A, B)
 
-  kx3 = Vx(x, y, A, B) + dt * .5 * ky2
-  ky3 = Vy(x, y, A, B) - dt * .5 * kx2
+  kx3 = dt * Vx(x + .5 * kx2, y + .5 * ky2, A, B)
+  ky3 = dt * Vy(x + .5 * kx2, y + .5 * ky2, A, B)
 
-  kx4 = Vx(x, y, A, B) + dt * ky3
-  ky4 = Vy(x, y, A, B) - dt * kx3
+  kx4 = dt * Vx(x + kx3, y + ky3, A, B)
+  ky4 = dt * Vy(x + kx3, y + ky3, A, B)
 
-  x_new = x + dt / 6 * (kx1 + 2. * kx2 + 2. * kx3 + kx4)
-  y_new = y + dt / 6 * (ky1 + 2. * ky2 + 2. * ky3 + ky4)
+  x_new = x + 1. / 6 * (kx1 + 2. * kx2 + 2. * kx3 + kx4)
+  y_new = y + 1. / 6 * (ky1 + 2. * ky2 + 2. * ky3 + ky4)
 
   return (x_new, y_new)
 

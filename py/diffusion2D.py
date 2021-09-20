@@ -3,6 +3,7 @@
 
 import numpy as np                       # numerical library
 import matplotlib.pylab as plt           # plot library
+from scipy.ndimage import laplace        # laplacian evaluation
 import matplotlib.animation as animation # animation plot
 
 __package__ = "Diffusion 2D model"
@@ -12,20 +13,6 @@ __email__   = "nico.curti2@unibo.it"
 g = lambda u, v, A, B : B*u - v*u*u
 f = lambda u, v, A, B : A - (B+1)*u + v*u*u
 
-def laplacian(X, dx):
-  n, m = X.shape
-  lap = np.empty((n, m))
-  lap[1:-1, 1:-1] = (X[1:-1, 2:] + X[1:-1, :-2] + X[2:, 1:-1] + X[:-2, 1:-1] - 4*X[1:-1, 1:-1]) / dx / dx
-  # Laplacian with boundary conditions
-  lap[1:-1, 0] = (X[1:-1, 1] + X[1:-1, -1] + X[:-2, 0] + X[2:, 0] - 4*X[1:-1, 0]) / dx / dx
-  lap[1:-1,-1] = (X[1:-1, 0] + X[1:-1, -2] + X[:-2,-1] + X[2:,-1] - 4*X[1:-1,-1]) / dx / dx
-  lap[0, 1:-1] = (X[0, 2:  ] + X[0, :-2  ] + X[-1,1:-1]+ X[1,1:-1] - 4*X[0, 1:-1]) / dx / dx
-  lap[-1,1:-1] = (X[-1,2:  ] + X[-1,:-2  ] + X[-2,1:-1]+ X[0,1:-1] - 4*X[-1,1:-1]) / dx / dx
-  lap[0, 0]  = (X[0, 1] + X[1, 0] + X[0,-1] + X[-1, 0] - 4*X[0, 0]) / dx / dx
-  lap[-1,-1] = (X[-1,-2]+ X[-2,-1]+ X[-1,0] + X[0, -1] - 4*X[-1,-1])/ dx / dx
-  lap[0, -1] = (X[0,-2] + X[1,-1] + X[0, 0] + X[-1, 0] - 4*X[0,-1]) / dx / dx
-  lap[-1, 0] = (X[-1,1] + X[0, 0] + X[-1,-1]+ X[-2, 0] - 4*X[-1,0]) / dx / dx
-  return lap
 
 if __name__ == '__main__':
 
@@ -57,8 +44,8 @@ if __name__ == '__main__':
   ims[0] = [plt.imshow(ut, animated=True, cmap="jet")]
   for t in range(Tmax):
     u, v = ut, vt
-    ut = dt * (Du * laplacian(u, dx) + f(u, v, A, B)) + u
-    vt = dt * (Dv * laplacian(v, dx) + g(u, v, A, B)) + v
+    ut = dt * (Du * laplace(input=u, mode='wrap') + f(u, v, A, B)) + u
+    vt = dt * (Dv * laplace(input=v, mode='wrap') + g(u, v, A, B)) + v
     ims[t + 1] = [plt.imshow( ut, animated=True, cmap="jet" )]
   movie = animation.ArtistAnimation(fig,
                                     ims,
