@@ -3,7 +3,23 @@
 #include <thread>
 #include <opencv2/opencv.hpp>
 
-
+/**
+* @brief OpenCV viewer
+*
+* @details This function is used for the visualization of
+* an OpenCV image and it could be used for an asynchronous
+* visualization of the result.
+*
+* @note The input image is normalized between its Min-Max
+* and converted to uint8_t before the visualization.
+* A Jet colormap (do not tell to prof. Giampieri that I have
+* used a Jet colormap, please!) is used for the color remapping.
+*
+* @param name Window name
+* @param img OpenCV Mat to plot
+* @param ms Wait time in ms
+*
+*/
 void view (const std :: string & name, cv :: Mat & img, int32_t ms=1)
 {
   cv :: Mat temp = img.clone();
@@ -27,7 +43,23 @@ void view (const std :: string & name, cv :: Mat & img, int32_t ms=1)
   }
 }
 
-
+/**
+* @brief Brusselator diffusion model
+*
+* @note The visualization of the 1st morphogen
+* is performed asynchronously during the update
+* computation using std :: thread.
+*
+* @param U OpenCV Mat of the 1st morphogen
+* @param V OpenCV Mat of the 2nd morphogen
+* @param dt Interval of time
+* @param A Kinetic reaction constant
+* @param B Kinetic reaction constant
+* @param Du Diffusion coef of the 1st morphogen
+* @param Dv Diffusion coef of the 2nd morphogen
+* @param iteration Number of iterations to perform
+*
+*/
 void diffusion (cv :: Mat & U, cv :: Mat & V,
                 const double & dt,
                 const double & A, const double & B,
@@ -48,8 +80,8 @@ void diffusion (cv :: Mat & U, cv :: Mat & V,
 
     // a wrap boundary condition should be more appropriated
     // but unfortunately OpenCV Laplacian doesn't support it :(
-    cv :: Laplacian(U, lap_u, CV_64FC1, 1, 1, 0, cv :: BORDER_REFLECT);
-    cv :: Laplacian(V, lap_v, CV_64FC1, 1, 1, 0, cv :: BORDER_REFLECT);
+    cv :: Laplacian(U, lap_u, CV_64FC1, 1, 1, 0, cv :: BORDER_REFLECT_101);
+    cv :: Laplacian(V, lap_v, CV_64FC1, 1, 1, 0, cv :: BORDER_REFLECT_101);
 
     cv :: Mat uuv = U.mul(U.mul(V));
 
@@ -67,6 +99,14 @@ void diffusion (cv :: Mat & U, cv :: Mat & V,
 }
 
 
+/**
+* @brief Command line helper
+*
+* @details Utility function for the command line user.
+*
+* @param argv Array of command line arguments.
+*
+*/
 void usage (char ** argv)
 {
   std :: cerr << "Usage: " << argv[0] << " [A <double>] [B <double>] [Dx <double>] [Dy <double>] [dt <double>]"
@@ -83,7 +123,24 @@ void usage (char ** argv)
 
 
 
-
+/**
+* @brief Command line parser
+*
+* @details Parse the command line arguments
+* and (eventually) set default values of the
+* required variables.
+* If something goes wrong the helper function
+* is called.
+*
+* @param argc Number of arguments in command line.
+* @param argv Array of command line arguments.
+* @param A Kinetic reaction constant
+* @param B Kinetic reaction constant
+* @param Dx Diffusion coef of the 1st morphogen
+* @param Dy Diffusion coef of the 2nd morphogen
+* @param dt Interval of time
+*
+*/
 void parse_args (int32_t argc, char ** argv,
                  double & A, double & B, double & Dx, double & Dy,
                  double & dt)
