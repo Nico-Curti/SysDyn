@@ -3,16 +3,17 @@
 |   N. Curti   |   **SysDyn**    | **Linux/MacOs** : [![Travis](https://travis-ci.com/Nico-Curti/SysDyn.svg?branch=master)](https://travis-ci.com/Nico-Curti/SysDyn) <br/> **Windows** : [![appveyor](https://ci.appveyor.com/api/projects/status/iwcl52c5ngx92w94?svg=true)](https://ci.appveyor.com/project/Nico-Curti/sysdyn)  | ![version](https://img.shields.io/badge/PyPI-v1.0.0-orange.svg?style=plastic) | [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Nico-Curti/SysDyn/blob/master/LICENSE)
 
 <a href="https://github.com/physycom">
-<div class="image">
-<img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90">
-</div>
+  <div class="image">
+    <img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90">
+  </div>
 </a>
 
 # Systems Dynamics Functions and Examples
 
 The project is developed as tutorial for the courses *Complex System* and *Numerical Methods* at the University of Bologna.
 
-Different methods about **Systems Dynamics** research are shown from the simplest ones to more advanced topics. The simplest code are written in **Python** language while the most (computationally) expensive ones are written in **C++**.
+Different methods about **Systems Dynamics** research are shown from the simplest ones to more advanced topics.
+The simplest code are written in **Python** language while the most (computational) expensive ones are written in **C++**.
 
 ## Installation
 
@@ -36,17 +37,32 @@ cmake --build .
 To use the python scripts install the prerequisites:
 
 ```bash
-pip install -r prerequisites.txt
+python -m pip install -r prerequisites.txt
 ```
 
 ## Contributions
 
-Any contribution is more than welcome. Just fill an issue or a pull request and I will check ASAP!
+Any contribution is more than welcome.
+Just fill an issue or a pull request and I will check ASAP!
 
 ## Authors
 
-* **Nico Curti** [git](https://github.com/Nico-Curti), [unibo](https://www.unibo.it/sitoweb/nico.curti2)
+* <img src="https://avatars0.githubusercontent.com/u/24650975?s=400&v=4" width="25px"> **Nico Curti** [git](https://github.com/Nico-Curti), [unibo](https://www.unibo.it/sitoweb/nico.curti2)
 
 ## License
 
-This project is released under GPL license.
+The `SysDyn` package is licensed under the [GPLv3](https://github.com/Nico-Curti/SysDyn/blob/master/LICENSE) License.
+
+## Citation
+
+If you have found `SysDyn` helpful in your research, please consider citing the project repository
+
+```BibTeX
+@misc{SysDyn,
+  author = {Curti, Nico},
+  title = {SysDyn - System Dynamics functions and examples},
+  year = {2021},
+  publisher = {GitHub},
+  howpublished = {\url{https://github.com/Nico-Curti/SysDyn}},
+}
+```
