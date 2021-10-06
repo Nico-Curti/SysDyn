@@ -27,7 +27,7 @@ def integrate (x, y0, alpha):
   y[0] = y0
 
   for i, _ in enumerate(x):
-    y[i + 1] = y[i] * (1. - alpha * dx)
+    y[i + 1] = y[i] - alpha * dx
 
   return y[:-1]
 

@@ -38,7 +38,7 @@ array < type > zero_order (const array < type > & x, const type & y0, const type
 
   // Integrate the equation using the Euler method
   for (int32_t i = 0; i < N; ++i)
-    y[i + 1] = y[i] * (type(1.) - alpha * dx);
+    y[i + 1] = y[i] - alpha * dx;
 
   return y;
 }
